@@ -3,100 +3,116 @@ let userinput = [];
 let colours = ["red", "purple", "green", "yellow"];
 let start = false;
 let gameOver = false;
-let x = 1;
+let level = 1;
 let score = 0;
-let highest = 0;
 
-function levelup() {
-    return ++x;
+// ✅ Load highest score from localStorage (or use 0)
+let highest = localStorage.getItem("highestScore") || 0;
+highest = parseInt(highest);
+
+const heading2 = document.querySelector("h5");
+const heading4 = document.querySelector("h4");
+const body = document.querySelector("body");
+
+// ✅ Display highest score
+function updateHighestDisplay() {
+    heading2.innerText = `Highest Score : ${highest}`;
 }
+updateHighestDisplay();
 
-let heading2 = document.querySelector("h5");
-heading2.innerHTML = `Highest Score : ${highest}`;
-
-function sequence() {
-    let randomNumber = Math.floor(Math.random() * 4);
-    let id = colours[randomNumber];
-    let color = document.querySelector(`.${id}`);
-    generate.push(id);
+// ✅ Flash sequence color
+function flashColor(color) {
     color.classList.add("flashwhite");
-    setTimeout(function() {
-        color.classList.remove("flashwhite");
-    }, 200);
+    setTimeout(() => color.classList.remove("flashwhite"), 200);
 }
 
-function gameStarted() {
-    if (!start && !gameOver) {
-        start = true;
-        score = 0; // Reset the score at the start of the game
-        let heading = document.querySelector("h4");
-        heading.innerText = `Level ${x}`;
-        sequence();
-    } else if (gameOver) {
-        // Reset the game state
-        gameOver = false;
-        start = false;
-        x = 1;
-        generate = [];
-        userinput = [];
-        let heading = document.querySelector("h4");
-        heading.innerHTML = `Game is over!! Your score is <b>${score}</b> <br> <br>Press any key to Restart the game`;
-        heading2.innerHTML = `Highest Score : ${highest}`;
+// ✅ Add new color to sequence
+function sequence() {
+    const randomIndex = Math.floor(Math.random() * 4);
+    const id = colours[randomIndex];
+    const color = document.querySelector(`.${id}`);
+    generate.push(id);
+    flashColor(color);
+}
+
+// ✅ Increase level and show it
+function levelup() {
+    level++;
+    heading4.innerText = `Level ${level}`;
+}
+
+// ✅ Reset game state after game over
+function resetGame() {
+    gameOver = false;
+    start = false;
+    level = 1;
+    generate = [];
+    userinput = [];
+    heading4.innerHTML = `Game is over!! Your score is <b>${score}</b> <br><br>Press any key or click to restart`;
+
+    // ✅ Update highest score if needed
+    if (score > highest) {
+        highest = score;
+        localStorage.setItem("highestScore", highest);
+        updateHighestDisplay();
     }
+
+    // ✅ Flash red on game over
+    body.style.background = "#ff4c4c";
+    setTimeout(() => {
+        body.style.background = "linear-gradient(to right, #1d2b64, #f8cdda)";
+    }, 500);
 }
 
-function checkans(index) {
+// ✅ Check if current user input is correct
+function checkAnswer(index) {
     return userinput[index] === generate[index];
 }
 
-function keeptrack() {
-    let buttons = document.querySelectorAll(".but");
-    buttons.forEach(button => {
-        button.addEventListener("click", function() {
-            if (start && !gameOver) {
-                let butt = this;
-                userinput.push(butt.classList[0]); // Store the color class in userinput array
-                console.log(userinput);
+// ✅ Handle user click on a button
+function handleClick(color) {
+    if (!start || gameOver) return;
 
-                // Flash the button when clicked
-                butt.classList.add("flash");
-                setTimeout(function() {
-                    butt.classList.remove("flash");
-                }, 200);
+    userinput.push(color);
+    const button = document.querySelector(`.${color}`);
+    button.classList.add("flash");
+    setTimeout(() => button.classList.remove("flash"), 200);
 
-                if (!checkans(userinput.length - 1)) {
-                    let bodyy = document.querySelector("body");
-                    bodyy.style.backgroundColor = "red";
-                    setTimeout(function() {
-                        bodyy.style.backgroundColor = "antiquewhite";
-                    }, 200);
-                    gameOver = true; // Set gameOver to true
-                    start = false; // Reset start to false
-                    // Update highest score if current score is higher
-                    if (score > highest) {
-                        highest = score;
-                    }
-                    
-                } else if (userinput.length === generate.length) {
-                    // If the user's input matches the sequence
-                    score++;
-                    x = levelup();
-                    userinput = [];
-                    let heading = document.querySelector("h4");
-                    heading.innerText = `Level ${x}`;
-                    setTimeout(sequence, 500); // Add a delay before showing the next sequence
-                }
-            }
-        });
-    });
+    if (!checkAnswer(userinput.length - 1)) {
+        resetGame();
+    } else if (userinput.length === generate.length) {
+        score++;
+        levelup();
+        userinput = [];
+        setTimeout(sequence, 500);
+    }
 }
 
-document.addEventListener("keypress", function() {
-    gameStarted(); // Reset the game when a key is pressed after game over
+// ✅ Start the game
+function startGame() {
+    if (!start && !gameOver) {
+        start = true;
+        score = 0;
+        level = 1;
+        generate = [];
+        userinput = [];
+        heading4.innerText = `Level ${level}`;
+        sequence();
+    } else if (gameOver) {
+        resetGame();
+    }
+}
+
+// ✅ Button click listeners
+document.querySelectorAll(".but").forEach(button => {
+    button.addEventListener("click", () => handleClick(button.classList[0]));
 });
 
-document.addEventListener("click", function() {
-    gameStarted(); // Reset the game when a click occurs after game over
+// ✅ Start/restart on keypress or body click
+document.addEventListener("keydown", startGame);
+document.addEventListener("click", startGame);
+document.getElementById("resetBtn").addEventListener("click", () => {
+    gameOver = true;
+    resetGame();
 });
 
-keeptrack();

@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simon Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="simon icon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simon Game</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="simon icon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <div class="container">
     <h1>Simon Game</h1>
     <h4>Press any key to start the game</h4>
-    <h5>highest score : 0</h5>
-    <div class="box1">
-        <div class="red but" type="button"></div>
-        <div class="green but" type="button"></div>
+    <h5>Highest Score: 0</h5>
+
+    <div class="grid">
+      <div class="red but" type="button"></div>
+      <div class="green but" type="button"></div>
+      <div class="yellow but" type="button"></div>
+      <div class="purple but" type="button"></div>
     </div>
-    <div class="box2">
-        <div class="yellow but" type="button"></div>
-        <div class="purple but" type="button"></div>
+
+    <div class="controls">
+      <button id="resetBtn">🔁 Reset</button>
     </div>
-    <script src="app.js"></script>
+     <footer>
+  
+  </div>
+ 
+<p style="color: white;">Made with 💖 by Preksha | Simon Game 🎮</p>
+</footer>
+  <script src="app.js"></script>
 </body>
+
 </html>
