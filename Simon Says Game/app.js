@@ -103,12 +103,10 @@ function startGame() {
     }
 }
 
-// ✅ Button click listeners
 document.querySelectorAll(".but").forEach(button => {
     button.addEventListener("click", () => handleClick(button.classList[0]));
 });
 
-// ✅ Start/restart on keypress or body click
 document.addEventListener("keydown", startGame);
 document.addEventListener("click", startGame);
 document.getElementById("resetBtn").addEventListener("click", () => {
