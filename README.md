@@ -6,7 +6,6 @@ A fun and interactive Simon Says game built using HTML, CSS, and JavaScript.
 
 ## 🌟 Features
 - Classic Simon Says gameplay.
-- Responsive design.
 - Easy to customize styles and logic.
 
 ## 🎯 How to Play
